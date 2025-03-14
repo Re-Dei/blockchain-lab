@@ -1,0 +1,19 @@
+{
+  "folders": [
+    {
+      "name": "server",
+      "path": "lab-1/server"
+    },
+    {
+      "name": "client",
+      "path": "lab-1/client"
+    },
+    {
+      "name": "lab-2",
+      "path": "lab-2"
+    }
+  ],
+  "settings": {
+    "python.terminal.activateEnvironment": true
+  }
+}
