@@ -1,12 +1,8 @@
 {
   "folders": [
     {
-      "name": "server",
-      "path": "lab-1/server"
-    },
-    {
-      "name": "client",
-      "path": "lab-1/client"
+      name: "lab-1",
+      "path": "lab-1-2"
     },
     {
       "name": "lab-2",
