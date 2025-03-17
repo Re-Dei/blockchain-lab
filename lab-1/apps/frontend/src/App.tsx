@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import io from 'socket.io-client'
 import './index.css'
+import CryptoJS from 'crypto-js'
 
 const socket = io('http://127.0.0.1:5000')
+let aesKey: string
 
 function App() {
   const [channel, setChannel] = useState('')
@@ -13,12 +15,16 @@ function App() {
 
   useEffect(() => {
     socket.on('receive_message', (data) => {
-      setMessages((prevMessages) => [...prevMessages, data])
+      const decryptedMessage = decryptMessage(aesKey, data.message)
+      setMessages((prevMessages) => [...prevMessages, { ...data, message: decryptedMessage }])
       console.log(data)
     })
 
     socket.on('room_joined', (data) => {
       if (data.success) {
+        if (data.key) {
+          aesKey = data.key
+        }
         setJoined(true)
         setError('')
       } else {
@@ -38,8 +44,31 @@ function App() {
   }
 
   const sendMessage = () => {
-    socket.emit('send_message', { channel, message })
+    const encryptedMessage = encryptMessage(aesKey, message)
+    socket.emit('send_message', { channel, message: encryptedMessage })
     setMessage('')
+  }
+
+  const encryptMessage = (key: string, plaintext: string) => {
+    const iv = CryptoJS.lib.WordArray.random(16)
+    const encrypted = CryptoJS.AES.encrypt(plaintext, CryptoJS.enc.Hex.parse(key), {
+      iv: iv,
+      padding: CryptoJS.pad.Pkcs7,
+      mode: CryptoJS.mode.CBC
+    })
+    return iv.concat(encrypted.ciphertext).toString(CryptoJS.enc.Hex)
+  }
+
+  const decryptMessage = (key: string, ciphertext: string) => {
+    const ciphertextBytes = CryptoJS.enc.Hex.parse(ciphertext)
+    const iv = CryptoJS.lib.WordArray.create(ciphertextBytes.words.slice(0, 4))
+    const encrypted = CryptoJS.lib.WordArray.create(ciphertextBytes.words.slice(4))
+    const decrypted = CryptoJS.AES.decrypt(CryptoJS.lib.CipherParams.create({ ciphertext: encrypted }), CryptoJS.enc.Hex.parse(key), {
+      iv: iv,
+      padding: CryptoJS.pad.Pkcs7,
+      mode: CryptoJS.mode.CBC
+    })
+    return decrypted.toString(CryptoJS.enc.Utf8)
   }
 
   return (
