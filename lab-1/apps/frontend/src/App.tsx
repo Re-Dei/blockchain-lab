@@ -4,7 +4,42 @@ import './index.css'
 import CryptoJS from 'crypto-js'
 
 const socket = io('http://127.0.0.1:5000')
-let aesKey: string
+
+class ChatClient {
+  aesKey: string
+
+  constructor() {
+    this.aesKey = ''
+  }
+
+  setAESKey(key: string) {
+    this.aesKey = key
+  }
+
+  encryptMessage(plaintext: string) {
+    const iv = CryptoJS.lib.WordArray.random(16)
+    const encrypted = CryptoJS.AES.encrypt(plaintext, CryptoJS.enc.Hex.parse(this.aesKey), {
+      iv: iv,
+      padding: CryptoJS.pad.Pkcs7,
+      mode: CryptoJS.mode.CBC
+    })
+    return iv.concat(encrypted.ciphertext).toString(CryptoJS.enc.Hex)
+  }
+
+  decryptMessage(ciphertext: string) {
+    const ciphertextBytes = CryptoJS.enc.Hex.parse(ciphertext)
+    const iv = CryptoJS.lib.WordArray.create(ciphertextBytes.words.slice(0, 4))
+    const encrypted = CryptoJS.lib.WordArray.create(ciphertextBytes.words.slice(4))
+    const decrypted = CryptoJS.AES.decrypt(CryptoJS.lib.CipherParams.create({ ciphertext: encrypted }), CryptoJS.enc.Hex.parse(this.aesKey), {
+      iv: iv,
+      padding: CryptoJS.pad.Pkcs7,
+      mode: CryptoJS.mode.CBC
+    })
+    return decrypted.toString(CryptoJS.enc.Utf8)
+  }
+}
+
+const chatClient = new ChatClient()
 
 function App() {
   const [channel, setChannel] = useState('')
@@ -15,7 +50,7 @@ function App() {
 
   useEffect(() => {
     socket.on('receive_message', (data) => {
-      const decryptedMessage = decryptMessage(aesKey, data.message)
+      const decryptedMessage = chatClient.decryptMessage(data.message)
       setMessages((prevMessages) => [...prevMessages, { ...data, message: decryptedMessage }])
       console.log(data)
     })
@@ -23,7 +58,7 @@ function App() {
     socket.on('room_joined', (data) => {
       if (data.success) {
         if (data.key) {
-          aesKey = data.key
+          chatClient.setAESKey(data.key)
         }
         setJoined(true)
         setError('')
@@ -44,31 +79,9 @@ function App() {
   }
 
   const sendMessage = () => {
-    const encryptedMessage = encryptMessage(aesKey, message)
+    const encryptedMessage = chatClient.encryptMessage(message)
     socket.emit('send_message', { channel, message: encryptedMessage })
     setMessage('')
-  }
-
-  const encryptMessage = (key: string, plaintext: string) => {
-    const iv = CryptoJS.lib.WordArray.random(16)
-    const encrypted = CryptoJS.AES.encrypt(plaintext, CryptoJS.enc.Hex.parse(key), {
-      iv: iv,
-      padding: CryptoJS.pad.Pkcs7,
-      mode: CryptoJS.mode.CBC
-    })
-    return iv.concat(encrypted.ciphertext).toString(CryptoJS.enc.Hex)
-  }
-
-  const decryptMessage = (key: string, ciphertext: string) => {
-    const ciphertextBytes = CryptoJS.enc.Hex.parse(ciphertext)
-    const iv = CryptoJS.lib.WordArray.create(ciphertextBytes.words.slice(0, 4))
-    const encrypted = CryptoJS.lib.WordArray.create(ciphertextBytes.words.slice(4))
-    const decrypted = CryptoJS.AES.decrypt(CryptoJS.lib.CipherParams.create({ ciphertext: encrypted }), CryptoJS.enc.Hex.parse(key), {
-      iv: iv,
-      padding: CryptoJS.pad.Pkcs7,
-      mode: CryptoJS.mode.CBC
-    })
-    return decrypted.toString(CryptoJS.enc.Utf8)
   }
 
   return (

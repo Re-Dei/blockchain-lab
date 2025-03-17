@@ -1,84 +1,87 @@
-# Turborepo starter
+# Blockchain Lab - Secure Messaging with AES and RSA
 
-This Turborepo starter is maintained by the Turborepo core team.
+This project demonstrates secure messaging using AES and RSA encryption algorithms. The application consists of a frontend built with React and a backend built with Flask and Flask-SocketIO.
 
-## Using this example
+## Features
 
-Run the following command:
+- **AES Encryption**: Messages are encrypted using AES before being sent and decrypted upon receipt.
+- **RSA Key Exchange**: RSA keys are used to securely exchange the AES key between the client and the server.
+- **Real-time Communication**: Real-time messaging is implemented using Socket.IO.
+
+## Setup
+
+### Prerequisites
+
+- pnpm
+- Python 3
+- Flask
+- Flask-SocketIO
+- `crypto-js` for frontend encryption
+- `cryptography` library for backend encryption
+
+### Installation
+
+1. Clone the repository:
 
 ```sh
-npx create-turbo@latest
+git clone https://github.com/Re-Dei/blockchain-lab.git
+cd blockchain-lab
 ```
 
-## What's inside?
+2. Install backend dependencies:
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+```sh
+cd lab-1/apps/backend
+pip install -r requirements.txt
 ```
 
-### Develop
+3. Install frontend dependencies:
 
-To develop all apps and packages, run the following command:
-
+```sh
+cd ../frontend
+pnpm install
 ```
-cd my-turborepo
+
+### Running the Application
+
+1. Start the backend server (dev):
+
+```sh
 pnpm dev
 ```
 
-### Remote Caching
+### Usage
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+1. Open your browser and navigate to `http://localhost:5173`.
+2. Enter a channel name to join a room.
+3. Once both users have joined the room, RSA keys are generated and exchanged.
+4. The AES key is encrypted with each user's public RSA key and sent to them.
+5. Users can send and receive encrypted messages in real-time.
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+## Project Structure
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+- `backend`: Contains the Flask backend code.
+- `frontend`: Contains the React frontend code.
 
-```
-cd my-turborepo
-npx turbo login
-```
+## Security
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+- **AES Encryption**: Used for encrypting and decrypting messages.
+- **RSA Key Exchange**: Used for securely exchanging the AES key between the client and the server.
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+## Dependencies
 
-```
-npx turbo link
-```
+### Backend
 
-## Useful Links
+- Flask
+- Flask-SocketIO
+- cryptography
 
-Learn more about the power of Turborepo:
+### Frontend
 
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+- React
+- Socket.IO
+- crypto-js
+
+## License
+
+This project is licensed under the MIT License.
