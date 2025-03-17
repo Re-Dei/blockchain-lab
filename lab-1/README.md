@@ -1,11 +1,10 @@
-# Blockchain Lab - Secure Messaging with AES and RSA
+# Blockchain Lab - Secure Messaging with AES
 
-This project demonstrates secure messaging using AES and RSA encryption algorithms. The application consists of a frontend built with React and a backend built with Flask and Flask-SocketIO.
+This project demonstrates secure messaging using AES algorithm. The application consists of a frontend built with React and a backend built with Flask and Flask-SocketIO.
 
 ## Features
 
 - **AES Encryption**: Messages are encrypted using AES before being sent and decrypted upon receipt.
-- **RSA Key Exchange**: RSA keys are used to securely exchange the AES key between the client and the server.
 - **Real-time Communication**: Real-time messaging is implemented using Socket.IO.
 
 ## Setup
@@ -44,7 +43,7 @@ pnpm install
 
 ### Running the Application
 
-1. Start the backend server (dev):
+1. Start (dev):
 
 ```sh
 pnpm dev
@@ -54,8 +53,8 @@ pnpm dev
 
 1. Open your browser and navigate to `http://localhost:5173`.
 2. Enter a channel name to join a room.
-3. Once both users have joined the room, RSA keys are generated and exchanged.
-4. The AES key is encrypted with each user's public RSA key and sent to them.
+3. Once both users have joined the room, AES keys are generated and exchanged.
+4. AES algorithm is used to encrypt messages.
 5. Users can send and receive encrypted messages in real-time.
 
 ## Project Structure
@@ -66,7 +65,6 @@ pnpm dev
 ## Security
 
 - **AES Encryption**: Used for encrypting and decrypting messages.
-- **RSA Key Exchange**: Used for securely exchanging the AES key between the client and the server.
 
 ## Dependencies
 
