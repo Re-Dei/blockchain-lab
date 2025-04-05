@@ -19,3 +19,11 @@ file: escrow.sol
 ![image](https://github.com/user-attachments/assets/4bcc3bba-1278-4d60-b708-ec90010c74a3)
 
 ![image](https://github.com/user-attachments/assets/7ab947b6-110d-45a8-ba9f-24c57b0eef65)
+
+## English Auction
+
+file: auction.sol
+
+![image](https://github.com/user-attachments/assets/a71d1146-0449-453a-96d7-0299bf782ece)
+
+![image](https://github.com/user-attachments/assets/860159ed-114a-43b5-ab7b-e190c87e9224)
